@@ -1,12 +1,20 @@
+import requests
 import json
 
 
-def load_data(file_path):
+def fetch_data_from_api(animal_name, api_key):
     """
-    Load JSON data from a file.
+    Fetch animal data from the API.
     """
-    with open(file_path, "r", encoding="utf-8") as file:
-        return json.load(file)
+    url = f"https://api.api-ninjas.com/v1/animals?name={animal_name}"
+    headers = {"X-Api-Key": api_key}
+
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"❌ Error fetching data: {response.status_code} - {response.text}")
+        return []
 
 
 def serialize_animal(animal_obj):
@@ -66,13 +74,22 @@ def generate_html(template_path, output_path, animals_data):
 
 
 def main():
-    data = load_data("animals_data.json")
-    generate_html(
-        template_path="animals_template.html",
-        output_path="animals.html",
-        animals_data=data,
-    )
-    print("✅ animals.html successfully generated!")
+    # Replace this with your real API key
+    api_key = "Sq47RimGaFzwgWQcUhKARDHEdEXPAG0mhDCEsNBF"
+    animal_name = "Fox"
+
+    print(f"🔎 Fetching data for '{animal_name}' from API...")
+    data = fetch_data_from_api(animal_name, api_key)
+
+    if data:
+        generate_html(
+            template_path="animals_template.html",
+            output_path="animals.html",
+            animals_data=data,
+        )
+        print("✅ animals.html successfully generated!")
+    else:
+        print("⚠️ No data found or error fetching from API.")
 
 
 if __name__ == "__main__":
