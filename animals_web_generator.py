@@ -58,14 +58,24 @@ def serialize_all_animals(data):
     return "<ul class=\"cards\">\n" + "\n".join(items) + "\n</ul>"
 
 
-def generate_html(template_path, output_path, animals_data):
+def generate_html(template_path, output_path, animals_data, animal_name):
     """
     Read template, replace placeholder, and write output file.
     """
     with open(template_path, "r", encoding="utf-8") as file:
         template_content = file.read()
 
-    animals_html = serialize_all_animals(animals_data)
+    # If no data, show a friendly message instead of animal cards
+    if not animals_data:
+        animals_html = f"""
+        <div style="text-align:center; margin-top:50px;">
+            <h2 style="color:#b22222;">The animal "{animal_name}" doesn't exist 🦓❌</h2>
+            <p style="color:#555;">Try searching for something else, like <em>Fox</em> or <em>Tiger</em>.</p>
+        </div>
+        """
+    else:
+        animals_html = serialize_all_animals(animals_data)
+
     final_html = template_content.replace("__REPLACE_ANIMALS_INFO__", animals_html)
 
     with open(output_path, "w", encoding="utf-8") as file:
@@ -82,15 +92,15 @@ def main():
     print(f"Fetching data for '{animal_name}' from API...")
     data = fetch_data_from_api(animal_name, api_key)
 
-    if data:
-        generate_html(
-            template_path="animals_template.html",
-            output_path="animals.html",
-            animals_data=data,
-        )
-        print("Website was successfully generated to the file animals.html.")
-    else:
-        print("No data found or error fetching from API.")
+    # Generate website with data or “not found” message
+    generate_html(
+        template_path="animals_template.html",
+        output_path="animals.html",
+        animals_data=data,
+        animal_name=animal_name,
+    )
+
+    print("Website was successfully generated to the file animals.html.")
 
 
 if __name__ == "__main__":
