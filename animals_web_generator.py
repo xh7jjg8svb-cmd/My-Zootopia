@@ -1,5 +1,4 @@
 import requests
-import json
 
 
 def fetch_data_from_api(animal_name, api_key):
@@ -13,7 +12,7 @@ def fetch_data_from_api(animal_name, api_key):
     if response.status_code == 200:
         return response.json()
     else:
-        print(f"❌ Error fetching data: {response.status_code} - {response.text}")
+        print(f"Error fetching data: {response.status_code} - {response.text}")
         return []
 
 
@@ -74,11 +73,13 @@ def generate_html(template_path, output_path, animals_data):
 
 
 def main():
-    # Replace this with your real API key
+    # Your API key
     api_key = "Sq47RimGaFzwgWQcUhKARDHEdEXPAG0mhDCEsNBF"
-    animal_name = "Fox"
 
-    print(f"🔎 Fetching data for '{animal_name}' from API...")
+    # Ask user for animal name
+    animal_name = input("Enter a name of an animal: ").strip()
+
+    print(f"Fetching data for '{animal_name}' from API...")
     data = fetch_data_from_api(animal_name, api_key)
 
     if data:
@@ -87,9 +88,9 @@ def main():
             output_path="animals.html",
             animals_data=data,
         )
-        print("✅ animals.html successfully generated!")
+        print("Website was successfully generated to the file animals.html.")
     else:
-        print("⚠️ No data found or error fetching from API.")
+        print("No data found or error fetching from API.")
 
 
 if __name__ == "__main__":
