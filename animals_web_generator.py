@@ -1,19 +1,4 @@
-import requests
-
-
-def fetch_data_from_api(animal_name, api_key):
-    """
-    Fetch animal data from the API.
-    """
-    url = f"https://api.api-ninjas.com/v1/animals?name={animal_name}"
-    headers = {"X-Api-Key": api_key}
-
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        print(f"Error fetching data: {response.status_code} - {response.text}")
-        return []
+import data_fetcher
 
 
 def serialize_animal(animal_obj):
@@ -83,16 +68,12 @@ def generate_html(template_path, output_path, animals_data, animal_name):
 
 
 def main():
-    # Your API key
-    api_key = "Sq47RimGaFzwgWQcUhKARDHEdEXPAG0mhDCEsNBF"
-
     # Ask user for animal name
     animal_name = input("Enter a name of an animal: ").strip()
 
     print(f"Fetching data for '{animal_name}' from API...")
-    data = fetch_data_from_api(animal_name, api_key)
+    data = data_fetcher.fetch_data(animal_name)
 
-    # Generate website with data or “not found” message
     generate_html(
         template_path="animals_template.html",
         output_path="animals.html",
@@ -100,7 +81,7 @@ def main():
         animal_name=animal_name,
     )
 
-    print("Website was successfully generated to the file animals.html.")
+    print("✅ Website was successfully generated to the file animals.html.")
 
 
 if __name__ == "__main__":
